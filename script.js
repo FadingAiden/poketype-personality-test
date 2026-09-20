@@ -2,6 +2,8 @@
 // QUESTION HELPER
 // ======================================================
 
+// Main type always receives 1.00.
+// Overlapping types receive much smaller factors.
 function q(mainType, text, overlaps = {}) {
     return {
         mainType,
@@ -788,188 +790,6 @@ const questions = [
 ];
 
 
-// ======================================================
-// SCORING SYSTEM
-// ======================================================
-
-function answerToSupport(answer) {
-    return (answer + 2) / 4;
-}
-
-
-function calculateScores() {
-
-    const scores = {};
-
-    Object.keys(types).forEach(type => {
-        scores[type] = 0;
-    });
-
-    shuffledQuestions.forEach((question, index) => {
-
-        const answer = answers[index];
-
-        // Ignore unanswered questions just in case.
-        if (typeof answer !== "number") {
-            return;
-        }
-
-        const support = answerToSupport(answer);
-
-        Object.entries(question.weights).forEach(
-            ([type, weight]) => {
-
-                scores[type] += support * weight;
-
-            }
-        );
-
-    });
-
-    return scores;
-}
-
-
-// ======================================================
-// MAXIMUM POSSIBLE SCORE FOR EACH TYPE
-// ======================================================
-
-function calculateMaximumScores() {
-
-    const maximumScores = {};
-
-    Object.keys(types).forEach(type => {
-        maximumScores[type] = 0;
-    });
-
-    questions.forEach(question => {
-
-        Object.entries(question.weights).forEach(
-            ([type, weight]) => {
-
-                maximumScores[type] += weight;
-
-            }
-        );
-
-    });
-
-    return maximumScores;
-}
-
-
-// ======================================================
-// TURN SCORES INTO PERCENTAGES
-// ======================================================
-
-function calculatePercentages(scores, maximumScores) {
-
-    const percentages = {};
-
-    Object.keys(types).forEach(type => {
-
-        if (maximumScores[type] === 0) {
-
-            percentages[type] = 0;
-            return;
-
-        }
-
-        const percentage =
-            (scores[type] / maximumScores[type]) * 100;
-
-        percentages[type] = Math.round(
-            Math.max(0, Math.min(100, percentage))
-        );
-
-    });
-
-    return percentages;
-}
-
-
-// ======================================================
-// QUESTION DESIGN AUDIT
-// ======================================================
-
-function auditQuestionDesign() {
-
-    const mainTypeCounts = {};
-
-    Object.keys(types).forEach(type => {
-        mainTypeCounts[type] = 0;
-    });
-
-    let problems = [];
-
-    questions.forEach((question, index) => {
-
-        const questionNumber = index + 1;
-
-        if (!types[question.mainType]) {
-            problems.push(
-                `Question ${questionNumber}: invalid main type "${question.mainType}".`
-            );
-        }
-
-        if (question.weights[question.mainType] !== 1) {
-            problems.push(
-                `Question ${questionNumber}: main type must have weight 1.`
-            );
-        }
-
-        if (mainTypeCounts[question.mainType] !== undefined) {
-            mainTypeCounts[question.mainType]++;
-        }
-
-        Object.entries(question.weights).forEach(
-            ([type, weight]) => {
-
-                if (type !== question.mainType && weight > 0.20) {
-
-                    problems.push(
-                        `Question ${questionNumber}: ${type} overlap is too strong (${weight}).`
-                    );
-
-                }
-
-            }
-        );
-
-    });
-
-    console.log(`Question count: ${questions.length}`);
-
-    console.table(mainTypeCounts);
-
-    if (questions.length !== 75) {
-        problems.push(
-            `The test has ${questions.length} questions instead of 75.`
-        );
-    }
-
-    if (problems.length === 0) {
-
-        console.log(
-            "✓ Question weighting audit passed."
-        );
-
-    } else {
-
-        console.warn("Question weighting problems:");
-
-        problems.forEach(problem => {
-            console.warn(problem);
-        });
-
-    }
-}
-
-
-// Run the audit once when the page loads.
-auditQuestionDesign();
-
-
 // ============================================================
 // ANSWER SCALE
 // ============================================================
@@ -977,48 +797,36 @@ auditQuestionDesign();
 const answerScale = [
 
     {
-        text: "Disagree",
+        label: "Disagree",
         value: -2
     },
 
     {
-        text: "Slightly Disagree",
+        label: "Slightly Disagree",
         value: -1
     },
 
     {
-        text: "Neutral",
+        label: "Neutral",
         value: 0
     },
 
     {
-        text: "Slightly Agree",
+        label: "Slightly Agree",
         value: 1
     },
 
     {
-        text: "Agree",
+        label: "Agree",
         value: 2
     }
 
 ];
 
 
-// ============================================================
-// VARIABLES
-// ============================================================
-
-let randomizedQuestions = [];
-
-let currentQuestion = 0;
-
-let answers = {};
-
-let isTransitioning = false;
-
 
 // ============================================================
-// DOM ELEMENTS
+// HTML ELEMENTS
 // ============================================================
 
 const introScreen =
@@ -1030,26 +838,29 @@ const testScreen =
 const resultScreen =
     document.getElementById("result-screen");
 
-const startButton =
+
+const startBtn =
     document.getElementById("start-btn");
 
-const backButton =
+const backBtn =
     document.getElementById("back-btn");
 
-const restartButton =
+const restartBtn =
     document.getElementById("restart-btn");
+
 
 const questionNumber =
     document.getElementById("question-number");
-
-const progressBar =
-    document.getElementById("progress-bar");
 
 const questionText =
     document.getElementById("question-text");
 
 const answerButtons =
     document.getElementById("answer-buttons");
+
+const progressBar =
+    document.getElementById("progress-bar");
+
 
 const resultMain =
     document.getElementById("result-main");
@@ -1059,6 +870,19 @@ const resultAuxiliary =
 
 const resultTypes =
     document.getElementById("result-types");
+
+
+
+// ============================================================
+// TEST STATE
+// ============================================================
+
+let shuffledQuestions = [];
+
+let currentQuestion = 0;
+
+let answers = [];
+
 
 
 // ============================================================
@@ -1075,44 +899,42 @@ function shuffle(array) {
         i--
     ) {
 
-        const randomIndex =
-            Math.floor(Math.random() * (i + 1));
+        const j =
+            Math.floor(
+                Math.random() * (i + 1)
+            );
 
         [
             shuffled[i],
-            shuffled[randomIndex]
+            shuffled[j]
         ] = [
-            shuffled[randomIndex],
+            shuffled[j],
             shuffled[i]
         ];
 
     }
 
     return shuffled;
-
 }
+
 
 
 // ============================================================
 // START TEST
 // ============================================================
 
-startButton.addEventListener(
-    "click",
-    startTest
-);
-
-
 function startTest() {
 
-    randomizedQuestions =
+    shuffledQuestions =
         shuffle(questions);
 
     currentQuestion = 0;
 
-    answers = {};
+    answers =
+        new Array(
+            shuffledQuestions.length
+        ).fill(null);
 
-    isTransitioning = false;
 
     introScreen.classList.remove("active");
 
@@ -1120,9 +942,11 @@ function startTest() {
 
     testScreen.classList.add("active");
 
+
     showQuestion();
 
 }
+
 
 
 // ============================================================
@@ -1132,20 +956,21 @@ function startTest() {
 function showQuestion() {
 
     const question =
-        randomizedQuestions[currentQuestion];
+        shuffledQuestions[currentQuestion];
+
+
+    questionNumber.textContent =
+        `Question ${currentQuestion + 1} / ${shuffledQuestions.length}`;
 
 
     questionText.textContent =
         question.text;
 
 
-    questionNumber.textContent =
-        `Question ${currentQuestion + 1} / ${randomizedQuestions.length}`;
-
-
     const progress =
         ((currentQuestion + 1) /
-        randomizedQuestions.length) * 100;
+            shuffledQuestions.length) *
+        100;
 
 
     progressBar.style.width =
@@ -1155,7 +980,7 @@ function showQuestion() {
     answerButtons.innerHTML = "";
 
 
-    answerScale.forEach(answer => {
+    answerScale.forEach(answerOption => {
 
         const button =
             document.createElement("button");
@@ -1167,16 +992,12 @@ function showQuestion() {
 
 
         button.textContent =
-            answer.text;
-
-
-        button.dataset.value =
-            answer.value;
+            answerOption.label;
 
 
         if (
-            answers[currentQuestion] !== undefined &&
-            answers[currentQuestion] === answer.value
+            answers[currentQuestion] ===
+            answerOption.value
         ) {
 
             button.classList.add(
@@ -1188,19 +1009,28 @@ function showQuestion() {
 
         button.addEventListener(
             "click",
-            () => selectAnswer(answer.value)
+            () => {
+
+                selectAnswer(
+                    answerOption.value
+                );
+
+            }
         );
 
 
-        answerButtons.appendChild(button);
+        answerButtons.appendChild(
+            button
+        );
 
     });
 
 
-    backButton.disabled =
+    backBtn.disabled =
         currentQuestion === 0;
 
 }
+
 
 
 // ============================================================
@@ -1209,94 +1039,45 @@ function showQuestion() {
 
 function selectAnswer(value) {
 
-    if (isTransitioning) {
-        return;
-    }
-
-
-    isTransitioning = true;
-
-
     answers[currentQuestion] =
         value;
 
 
-    const buttons =
-        document.querySelectorAll(
-            ".answer-btn"
-        );
+    if (
+        currentQuestion <
+        shuffledQuestions.length - 1
+    ) {
 
+        currentQuestion++;
 
-    buttons.forEach(button => {
+        showQuestion();
 
-        if (
-            Number(button.dataset.value) === value
-        ) {
+    } else {
 
-            button.classList.add(
-                "selected"
-            );
+        showResults();
 
-        }
-
-        button.disabled = true;
-
-    });
-
-
-    setTimeout(() => {
-
-        if (
-            currentQuestion <
-            randomizedQuestions.length - 1
-        ) {
-
-            currentQuestion++;
-
-            isTransitioning = false;
-
-            showQuestion();
-
-        } else {
-
-            isTransitioning = false;
-
-            showResults();
-
-        }
-
-    }, 250);
+    }
 
 }
+
 
 
 // ============================================================
 // BACK BUTTON
 // ============================================================
 
-backButton.addEventListener(
-    "click",
-    goBack
-);
-
-
 function goBack() {
 
-    if (
-        currentQuestion === 0 ||
-        isTransitioning
-    ) {
+    if (currentQuestion > 0) {
 
-        return;
+        currentQuestion--;
+
+        showQuestion();
 
     }
 
-
-    currentQuestion--;
-
-    showQuestion();
-
 }
+
 
 
 // ============================================================
@@ -1315,17 +1096,16 @@ function calculateScores() {
     });
 
 
-    Object.keys(answers).forEach(
-        questionIndex => {
+    shuffledQuestions.forEach(
+        (question, index) => {
 
-            const question =
-                randomizedQuestions[
-                    questionIndex
-                ];
+            const answer =
+                answers[index];
 
 
-            const answerValue =
-                answers[questionIndex];
+            if (answer === null) {
+                return;
+            }
 
 
             Object.entries(
@@ -1333,8 +1113,15 @@ function calculateScores() {
             ).forEach(
                 ([type, weight]) => {
 
-                    scores[type] +=
-                        answerValue * weight;
+                    if (
+                        scores[type] !==
+                        undefined
+                    ) {
+
+                        scores[type] +=
+                            answer * weight;
+
+                    }
 
                 }
             );
@@ -1348,8 +1135,10 @@ function calculateScores() {
 }
 
 
+
 // ============================================================
-// CALCULATE MAXIMUM POSSIBLE SCORES
+// CALCULATE MAXIMUM POSSIBLE SCORE
+// FOR EACH TYPE
 // ============================================================
 
 function calculateMaximumScores() {
@@ -1364,22 +1153,27 @@ function calculateMaximumScores() {
     });
 
 
-    randomizedQuestions.forEach(
-        question => {
+    questions.forEach(question => {
 
-            Object.entries(
-                question.weights
-            ).forEach(
-                ([type, weight]) => {
+        Object.entries(
+            question.weights
+        ).forEach(
+            ([type, weight]) => {
+
+                if (
+                    maximumScores[type] !==
+                    undefined
+                ) {
 
                     maximumScores[type] +=
                         Math.abs(weight) * 2;
 
                 }
-            );
 
-        }
-    );
+            }
+        );
+
+    });
 
 
     return maximumScores;
@@ -1387,8 +1181,9 @@ function calculateMaximumScores() {
 }
 
 
+
 // ============================================================
-// CONVERT SCORES TO PERCENTAGES
+// CONVERT RAW SCORES TO PERCENTAGES
 // ============================================================
 
 function calculatePercentages(
@@ -1405,9 +1200,9 @@ function calculatePercentages(
             maximumScores[type];
 
 
-        if (max === 0) {
+        if (!max) {
 
-            percentages[type] = 0;
+            percentages[type] = 50;
 
             return;
 
@@ -1439,16 +1234,48 @@ function calculatePercentages(
 
 }
 
+function getResultDescription(typeName) {
 
-// ============================================================
-// GET CSS TYPE CLASS
-// ============================================================
+    const description =
+        types[typeName].description;
 
-function getTypeClass(type) {
 
-    return `type-${type.toLowerCase()}`;
+    if (Array.isArray(description)) {
+
+        const firstParagraph =
+            description.find(
+                paragraph =>
+                    paragraph.trim() !== ""
+            );
+
+
+        return firstParagraph || "";
+
+    }
+
+
+    return description || "";
 
 }
+
+
+
+// ============================================================
+// ESCAPE HTML
+// ============================================================
+
+function escapeHTML(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        String(text);
+
+    return div.innerHTML;
+
+}
+
 
 
 // ============================================================
@@ -1473,62 +1300,44 @@ function showResults() {
 
 
     const sortedTypes =
-        Object.entries(percentages)
+        Object.keys(percentages)
             .sort(
-                (a, b) => b[1] - a[1]
+                (a, b) =>
+                    percentages[b] -
+                    percentages[a]
             );
 
 
-
-    // --------------------------------------------------------
-    // PRIMARY TYPE
-    // --------------------------------------------------------
-
     const primaryType =
-        sortedTypes[0][0];
+        sortedTypes[0];
+
+    const secondType =
+        sortedTypes[1];
 
 
     const primaryPercentage =
-        sortedTypes[0][1];
-
-
-    // --------------------------------------------------------
-    // SECOND TYPE
-    // --------------------------------------------------------
-
-    const secondType =
-        sortedTypes[1][0];
-
+        percentages[primaryType];
 
     const secondPercentage =
-        sortedTypes[1][1];
+        percentages[secondType];
 
-
-    // --------------------------------------------------------
-    // AUXILIARY RULE
-    // --------------------------------------------------------
 
     const percentageDifference =
         primaryPercentage -
         secondPercentage;
 
 
+    // Auxiliary qualifies when it is within
+    // 10 percentage points of the primary type.
+
     const hasAuxiliary =
         percentageDifference <= 10;
 
 
-    // --------------------------------------------------------
+
+    // ========================================================
     // PRIMARY RESULT
-    // --------------------------------------------------------
-
-    resultMain.className =
-        "primary-result";
-
-
-    resultMain.classList.add(
-        getTypeClass(primaryType)
-    );
-
+    // ========================================================
 
     resultMain.style.setProperty(
         "--type-color",
@@ -1538,91 +1347,104 @@ function showResults() {
 
     resultMain.innerHTML = `
 
-        <h2>
-            ${primaryType}
-        </h2>
-
-        <p class="result-percentage">
-            ${primaryPercentage}%
+        <p class="result-label">
+            Primary Type
         </p>
 
-        <p>
-            ${types[primaryType].description}
+        <h2>
+            ${escapeHTML(primaryType)}
+        </h2>
+
+        <div class="result-percentage">
+            ${primaryPercentage}%
+        </div>
+
+        <p class="result-description">
+            ${escapeHTML(
+                getResultDescription(
+                    primaryType
+                )
+            )}
         </p>
 
     `;
 
 
-    // --------------------------------------------------------
+
+    // ========================================================
     // AUXILIARY RESULT
-    // --------------------------------------------------------
-
-    resultAuxiliary.style.setProperty(
-        "--auxiliary-color",
-        typeColors[secondType]
-    );
-
+    // ========================================================
 
     if (hasAuxiliary) {
 
+        resultAuxiliary.style.display =
+            "block";
+
+
+        resultAuxiliary.style.setProperty(
+            "--auxiliary-color",
+            typeColors[secondType]
+        );
+
+
         resultAuxiliary.innerHTML = `
 
-            <h3>
+            <p class="result-label">
                 Auxiliary Type
-            </h3>
+            </p>
 
-            <p>
-                <strong>
-                    ${secondType}
-                </strong>
-                ·
+            <h2>
+                ${escapeHTML(secondType)}
+            </h2>
+
+            <div class="result-percentage">
                 ${secondPercentage}%
+            </div>
+
+            <p class="auxiliary-note">
+                This type is ${percentageDifference}
+                percentage point${percentageDifference === 1 ? "" : "s"}
+                behind your primary type.
             </p>
 
-            <p>
-                Your second-highest type is only
-                ${percentageDifference} percentage
-                point${percentageDifference === 1 ? "" : "s"}
-                below your primary type, so it counts
-                as your auxiliary type.
-            </p>
-
-            <p>
-                ${types[secondType].description}
+            <p class="result-description">
+                ${escapeHTML(
+                    getResultDescription(
+                        secondType
+                    )
+                )}
             </p>
 
         `;
 
     } else {
 
-        resultAuxiliary.style.setProperty(
-            "--auxiliary-color",
-            "#777b90"
+        resultAuxiliary.style.display =
+            "block";
+
+
+        resultAuxiliary.style.removeProperty(
+            "--auxiliary-color"
         );
 
 
         resultAuxiliary.innerHTML = `
 
-            <h3>
-                No Auxiliary Type
-            </h3>
-
-            <p>
-                Your second-highest type is
-                <strong>
-                    ${secondType}
-                </strong>
-                at
-                <strong>
-                    ${secondPercentage}%
-                </strong>.
+            <p class="result-label">
+                Auxiliary Type
             </p>
 
-            <p>
-                It is ${percentageDifference}
-                percentage points below your primary
-                type, so it does not qualify as an
-                auxiliary type.
+            <h2>
+                No Auxiliary Type
+            </h2>
+
+            <p class="auxiliary-note">
+                Your second-highest type was
+                ${escapeHTML(secondType)}
+                at ${secondPercentage}%,
+                which is ${percentageDifference}
+                percentage points below your
+                primary type.
             </p>
 
         `;
@@ -1630,70 +1452,73 @@ function showResults() {
     }
 
 
-    // --------------------------------------------------------
-    // ALL 18 TYPES
-    // --------------------------------------------------------
+
+    // ========================================================
+    // ALL TYPE RESULTS
+    // ========================================================
 
     resultTypes.innerHTML = "";
 
 
-    sortedTypes.forEach(
-        ([type, percentage]) => {
+    sortedTypes.forEach(type => {
 
-            const resultItem =
-                document.createElement("div");
-
-
-            resultItem.classList.add(
-                "type-result",
-                getTypeClass(type)
-            );
+        const percentage =
+            percentages[type];
 
 
-            resultItem.style.setProperty(
-                "--type-color",
-                typeColors[type]
-            );
+        const row =
+            document.createElement("div");
 
 
-            resultItem.innerHTML = `
-
-                <div class="type-result-header">
-
-                    <span class="type-result-name">
-                        ${type}
-                    </span>
-
-                    <span class="type-result-percentage">
-                        ${percentage}%
-                    </span>
-
-                </div>
+        row.classList.add(
+            "type-result-row"
+        );
 
 
-                <div class="type-result-bar">
-
-                    <div
-                        class="type-result-fill"
-                        style="width: ${percentage}%"
-                    ></div>
-
-                </div>
-
-            `;
+        row.style.setProperty(
+            "--type-color",
+            typeColors[type]
+        );
 
 
-            resultTypes.appendChild(
-                resultItem
-            );
+        row.innerHTML = `
 
-        }
-    );
+            <div class="type-result-header">
+
+                <span class="type-result-name">
+                    ${escapeHTML(type)}
+                </span>
+
+                <span class="type-result-percentage">
+                    ${percentage}%
+                </span>
+
+            </div>
 
 
-    // --------------------------------------------------------
-    // SWITCH SCREENS
-    // --------------------------------------------------------
+            <div class="type-result-track">
+
+                <div
+                    class="type-result-fill"
+                    style="width: ${percentage}%"
+                ></div>
+
+            </div>
+
+        `;
+
+
+        resultTypes.appendChild(
+            row
+        );
+
+    });
+
+
+
+    // ========================================================
+    // SWITCH SCREEN
+    // ========================================================
 
     testScreen.classList.remove(
         "active"
@@ -1713,35 +1538,26 @@ function showResults() {
 }
 
 
-// ============================================================
-// RESTART
-// ============================================================
 
-restartButton.addEventListener(
-    "click",
-    restartTest
-);
-
+// ============================================================
+// RESTART TEST
+// ============================================================
 
 function restartTest() {
 
+    shuffledQuestions = [];
+
     currentQuestion = 0;
 
-    answers = {};
-
-    randomizedQuestions = [];
-
-    isTransitioning = false;
-
-
-    resultMain.innerHTML = "";
-
-    resultAuxiliary.innerHTML = "";
-
-    resultTypes.innerHTML = "";
+    answers = [];
 
 
     resultScreen.classList.remove(
+        "active"
+    );
+
+
+    testScreen.classList.remove(
         "active"
     );
 
@@ -1751,6 +1567,10 @@ function restartTest() {
     );
 
 
+    progressBar.style.width =
+        "0%";
+
+
     window.scrollTo({
         top: 0,
         behavior: "smooth"
@@ -1758,78 +1578,25 @@ function restartTest() {
 
 }
 
-function testTypeCombinations(simulations = 100000) {
-  const typeNames = Object.keys(types);
 
-  const foundPairs = new Set();
 
-  for (let simulation = 0; simulation < simulations; simulation++) {
-    const fakeAnswers = questions.map(() => {
-      return Math.floor(Math.random() * 5) - 2;
-    });
+// ============================================================
+// BUTTON EVENTS
+// ============================================================
 
-    const scores = {};
-    const maxScores = {};
+startBtn.addEventListener(
+    "click",
+    startTest
+);
 
-    typeNames.forEach(type => {
-      scores[type] = 0;
-      maxScores[type] = 0;
-    });
 
-    questions.forEach((question, index) => {
-      const answer = fakeAnswers[index];
+backBtn.addEventListener(
+    "click",
+    goBack
+);
 
-      for (const [type, weight] of Object.entries(question.weights)) {
-        scores[type] += answer * weight;
-        maxScores[type] += Math.abs(weight) * 2;
-      }
-    });
 
-    const percentages = {};
-
-    typeNames.forEach(type => {
-      if (maxScores[type] === 0) {
-        percentages[type] = 50;
-        return;
-      }
-
-      percentages[type] =
-        ((scores[type] + maxScores[type]) /
-          (2 * maxScores[type])) *
-        100;
-    });
-
-    const sorted = typeNames.sort(
-      (a, b) => percentages[b] - percentages[a]
-    );
-
-    const primary = sorted[0];
-    const secondary = sorted[1];
-
-    const difference =
-      percentages[primary] - percentages[secondary];
-
-    if (difference <= 10) {
-      foundPairs.add(`${primary} + ${secondary}`);
-    }
-  }
-
-  const possiblePairs = [];
-
-  typeNames.forEach(primary => {
-    typeNames.forEach(auxiliary => {
-      if (primary !== auxiliary) {
-        possiblePairs.push(`${primary} + ${auxiliary}`);
-      }
-    });
-  });
-
-  const missingPairs = possiblePairs.filter(
-    pair => !foundPairs.has(pair)
-  );
-
-  console.log("Possible ordered combinations:", possiblePairs.length);
-  console.log("Combinations found:", foundPairs.size);
-  console.log("Missing combinations:", missingPairs.length);
-  console.log(missingPairs);
-}
+restartBtn.addEventListener(
+    "click",
+    restartTest
+);
