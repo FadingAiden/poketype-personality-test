@@ -841,3 +841,325 @@ body {
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
+
+.types-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+.type-drawer {
+    --type-color: #ffffff;
+
+    border: 1px solid #2a2d3a;
+    border-radius: 14px;
+
+    background: #151821;
+
+    overflow: hidden;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.type-drawer:hover {
+    border-color: var(--type-color);
+}
+
+
+.type-drawer.open {
+    border-color: var(--type-color);
+
+    box-shadow:
+        0 0 20px
+        color-mix(
+            in srgb,
+            var(--type-color) 12%,
+            transparent
+        );
+}
+
+
+.drawer-header {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 14px 18px;
+
+    border: none;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    text-align: left;
+}
+
+
+.drawer-header h2 {
+    margin: 0;
+
+    color: var(--type-color);
+
+    font-size: 1.3rem;
+
+    letter-spacing: 0.02em;
+}
+
+
+.drawer-symbol {
+    color: var(--type-color);
+
+    font-size: 1.5rem;
+
+    line-height: 1;
+}
+
+
+.drawer-content {
+    max-height: 0;
+
+    overflow: hidden;
+
+    transition:
+        max-height 0.4s ease;
+}
+
+
+.drawer-inner {
+    padding:
+        4px 18px
+        22px;
+}
+
+
+/* stacked dossier sections */
+
+.dossier-section {
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+
+    padding: 14px 0;
+
+    border-top:
+        1px solid #282b38;
+}
+
+
+.dossier-label {
+    color: #72778d;
+
+    font-size: 0.72rem;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.12em;
+}
+
+
+.dossier-value {
+    color: #e6e7ec;
+
+    font-size: 1rem;
+
+    line-height: 1.55;
+}
+
+
+.dossier-traits {
+    color: #c8cad4;
+}
+
+
+/* description */
+
+.dossier-description {
+    margin-top: 10px;
+
+    padding-top: 18px;
+
+    border-top:
+        1px solid #282b38;
+}
+
+
+.dossier-description p {
+    margin:
+        0 0 16px;
+
+    color: #b8bbc7;
+
+    line-height: 1.8;
+}
+
+
+.dossier-description p:last-child {
+    margin-bottom: 0;
+}
+
+.type-drawer {
+    --type-color: #ffffff;
+
+    position: relative;
+
+    border: 1px solid #272a36;
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            90deg,
+            color-mix(
+                in srgb,
+                var(--type-color) 5%,
+                #141720
+            ),
+            #141720 22%
+        );
+
+    overflow: hidden;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+}
+
+
+.type-drawer:hover {
+    box-shadow:
+        0 0 14px
+        color-mix(
+            in srgb,
+            var(--type-color) 12%,
+            transparent
+        );
+}
+
+
+.type-drawer.open {
+    border-color:
+        color-mix(
+            in srgb,
+            var(--type-color) 60%,
+            #272a36
+        );
+
+    box-shadow:
+        0 0 22px
+        color-mix(
+            in srgb,
+            var(--type-color) 16%,
+            transparent
+        );
+}
+
+.type-drawer::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+    bottom: 0;
+
+    width: 4px;
+
+    background: var(--type-color);
+
+    box-shadow:
+        0 0 10px
+        color-mix(
+            in srgb,
+            var(--type-color) 45%,
+            transparent
+        );
+}
+
+.back-link,
+.primary-link-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 11px 18px;
+
+    border-radius: 10px;
+
+    border: 1px solid #2b2f3d;
+
+    background:
+        linear-gradient(
+            180deg,
+            #181b25,
+            #12141c
+        );
+
+    color: #cfd2dc;
+
+    text-decoration: none;
+
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    letter-spacing: 0.02em;
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.25s ease,
+        color 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.back-link:hover,
+.primary-link-btn:hover {
+    transform: translateY(-2px);
+
+    border-color: #5a6075;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            180deg,
+            #1d2130,
+            #151822
+        );
+
+    box-shadow:
+        0 0 16px
+        rgba(180, 190, 255, 0.10);
+}
+
+
+.back-link:active,
+.primary-link-btn:active {
+    transform: translateY(0);
+}
+
+
+/* top back button */
+
+.back-link {
+    margin-bottom: 30px;
+}
+
+
+/* bottom back button */
+
+.primary-link-btn {
+    margin-top: 20px;
+}
