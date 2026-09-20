@@ -165,508 +165,771 @@ function q(mainType, text, overlaps = {}) {
 
 const questions = [
 
-    // ---------------- NORMAL ----------------
-
-    q(
-        "Normal",
-        "I feel most comfortable when life has a steady, familiar rhythm.",
-        { Grass: 0.20, Ground: 0.15 }
-    ),
-
-    q(
-        "Normal",
-        "I usually trust practical common sense more than dramatic or unusual approaches.",
-        { Ground: 0.20, Rock: 0.15 }
-    ),
-
-    q(
-        "Normal",
-        "I would rather keep a group peaceful and cooperative than turn every disagreement into a confrontation.",
-        { Water: 0.18, Grass: 0.12 }
-    ),
-
-    q(
-        "Normal",
-        "I prefer reliable progress over chasing something flashy just because it is exciting.",
-        { Rock: 0.15, Steel: 0.10, Grass: 0.10 }
-    ),
-
-    q(
-        "Normal",
-        "I tend to choose what is sensible and workable rather than making life more complicated than it needs to be.",
-        { Ground: 0.18, Rock: 0.12 }
-    ),
-
-
-    // ---------------- WATER ----------------
-
-    q(
-        "Water",
-        "I can adjust my behavior easily when I enter a new social environment.",
-        { Normal: 0.15, Fairy: 0.10 }
-    ),
-
-    q(
-        "Water",
-        "I am comfortable changing plans when circumstances shift.",
-        { Flying: 0.12, Electric: 0.08 }
-    ),
-
-    q(
-        "Water",
-        "I often make room for other people's preferences rather than insisting on my own way.",
-        { Normal: 0.15, Fairy: 0.10 }
-    ),
-
-    q(
-        "Water",
-        "I would rather stay flexible than lock myself into one rigid path.",
-        { Flying: 0.15, Grass: 0.08 }
-    ),
-
-    q(
-        "Water",
-        "Belonging matters to me, but I still want enough freedom to move between different people and situations.",
-        { Flying: 0.12, Fairy: 0.10 }
-    ),
-
-
-    // ---------------- FIRE ----------------
-
-    q(
-        "Fire",
-        "When I care about something, my emotions become intense and hard to hide.",
-        { Dragon: 0.15, Fairy: 0.08 }
-    ),
-
-    q(
-        "Fire",
-        "I speak my mind even when I know it may create conflict.",
-        { Dark: 0.18, Fighting: 0.12 }
-    ),
-
-    q(
-        "Fire",
-        "I can become heated quickly when something important to me is challenged.",
-        { Dragon: 0.12, Dark: 0.10 }
-    ),
-
-    q(
-        "Fire",
-        "Strong passion is one of the main forces that pushes me into action.",
-        { Electric: 0.15, Dragon: 0.12 }
-    ),
-
-    q(
-        "Fire",
-        "I would rather act with conviction than stay emotionally detached.",
-        { Fighting: 0.12, Dragon: 0.10 }
-    ),
-
-
-    // ---------------- GRASS ----------------
-
-    q(
-        "Grass",
-        "I like creating routines that help me grow steadily over time.",
-        { Normal: 0.18, Steel: 0.10 }
-    ),
-
-    q(
-        "Grass",
-        "I usually think carefully before acting instead of rushing into a decision.",
-        { Ground: 0.15, Psychic: 0.12 }
-    ),
-
-    q(
-        "Grass",
-        "I naturally notice what people, projects, or environments need in order to flourish.",
-        { Fairy: 0.12, Water: 0.10 }
-    ),
-
-    q(
-        "Grass",
-        "Balance, mindfulness, and a sense of inner harmony are important to me.",
-        { Psychic: 0.12, Normal: 0.10 }
-    ),
-
-
-    // ---------------- ELECTRIC ----------------
-
-    q(
-        "Electric",
-        "I get restless when life goes too long without something new or stimulating.",
-        { Flying: 0.18, Fire: 0.10 }
-    ),
-
-    q(
-        "Electric",
-        "I often follow sudden bursts of excitement just to see where they lead.",
-        { Flying: 0.15, Fairy: 0.08 }
-    ),
-
-    q(
-        "Electric",
-        "People often experience me as lively, playful, or full of energy.",
-        { Fairy: 0.15, Fire: 0.10 }
-    ),
-
-    q(
-        "Electric",
-        "I would choose a spontaneous adventure over a carefully planned ordinary day.",
-        { Flying: 0.18, Dark: 0.06 }
-    ),
-
-
-    // ---------------- ICE ----------------
-
-    q(
-        "Ice",
-        "I can put my emotions aside when I need to analyze a situation clearly.",
-        { Psychic: 0.20, Steel: 0.10 }
-    ),
-
-    q(
-        "Ice",
-        "I value precise reasoning even when the conclusion is uncomfortable.",
-        { Rock: 0.15, Psychic: 0.12 }
-    ),
-
-    q(
-        "Ice",
-        "In tense situations, I usually become more controlled rather than more expressive.",
-        { Psychic: 0.15, Steel: 0.10 }
-    ),
-
-    q(
-        "Ice",
-        "Efficiency and objective clarity matter more to me than softening every message.",
-        { Steel: 0.15, Rock: 0.10 }
-    ),
-
-
-    // ---------------- BUG ----------------
-
-    q(
-        "Bug",
-        "I can become deeply absorbed in subjects that most people barely notice.",
-        { Psychic: 0.15, Steel: 0.06 }
-    ),
-
-    q(
-        "Bug",
-        "I often observe quietly before revealing what I really think.",
-        { Ghost: 0.12, Psychic: 0.10 }
-    ),
-
-    q(
-        "Bug",
-        "My interests or thought patterns can be unusual enough to surprise people who do not know me well.",
-        { Ghost: 0.12, Flying: 0.08 }
-    ),
-
-    q(
-        "Bug",
-        "I enjoy collecting detailed knowledge about niche or specialized topics.",
-        { Steel: 0.10, Psychic: 0.10 }
-    ),
-
-
-    // ---------------- FLYING ----------------
-
-    q(
-        "Flying",
-        "I spend a lot of time imagining possibilities beyond my current circumstances.",
-        { Psychic: 0.10, Fairy: 0.10 }
-    ),
-
-    q(
-        "Flying",
-        "Freedom to explore matters more to me than having every part of life secured in advance.",
-        { Water: 0.15, Electric: 0.10 }
-    ),
-
-    q(
-        "Flying",
-        "I am drawn to bold ideas even when they are not especially realistic yet.",
-        { Dragon: 0.10, Electric: 0.08 }
-    ),
-
-    q(
-        "Flying",
-        "Optimism and imagination often make me willing to take a leap into the unknown.",
-        { Electric: 0.12, Fairy: 0.10 }
-    ),
-
-
-    // ---------------- FIGHTING ----------------
-
-    q(
-        "Fighting",
-        "I feel a strong responsibility to stand up for people who are being treated unfairly.",
-        { Rock: 0.12, Ground: 0.08 }
-    ),
-
-    q(
-        "Fighting",
-        "When a challenge appears, my instinct is to face it directly rather than avoid it.",
-        { Rock: 0.15, Dragon: 0.10 }
-    ),
-
-    q(
-        "Fighting",
-        "I try to follow a personal code even when breaking it would be easier.",
-        { Ground: 0.12, Rock: 0.10 }
-    ),
-
-    q(
-        "Fighting",
-        "Courage means protecting what matters while still understanding the risks involved.",
-        { Ground: 0.10, Dragon: 0.08 }
-    ),
-
-
-    // ---------------- PSYCHIC ----------------
-
-    q(
-        "Psychic",
-        "I am naturally drawn to hidden meanings, abstract ideas, or things that are difficult to explain.",
-        { Ghost: 0.15, Bug: 0.08 }
-    ),
-
-    q(
-        "Psychic",
-        "I often understand the mood or direction of a situation before anyone says it directly.",
-        { Poison: 0.10, Fairy: 0.08 }
-    ),
-
-    q(
-        "Psychic",
-        "I prefer influencing a situation subtly rather than forcing people openly.",
-        { Poison: 0.10, Water: 0.08 }
-    ),
-
-    q(
-        "Psychic",
-        "I enjoy long periods of thought simply because understanding something deeply is satisfying.",
-        { Ice: 0.15, Bug: 0.10 }
-    ),
-
-
-    // ---------------- GROUND ----------------
-
-    q(
-        "Ground",
-        "I am comfortable setting rules or expectations when a group needs structure.",
-        { Steel: 0.12, Normal: 0.10 }
-    ),
-
-    q(
-        "Ground",
-        "Experience and proven methods usually carry more weight with me than impulse.",
-        { Normal: 0.15, Rock: 0.12 }
-    ),
-
-    q(
-        "Ground",
-        "People can rely on me to keep practical responsibilities under control.",
-        { Normal: 0.15, Steel: 0.10 }
-    ),
-
-    q(
-        "Ground",
-        "I become cautious when a situation is unfamiliar and the consequences are unclear.",
-        { Rock: 0.10, Fighting: 0.08 }
-    ),
-
-
-    // ---------------- ROCK ----------------
-
-    q(
-        "Rock",
-        "I would rather hear a difficult truth directly than have it softened until it becomes vague.",
-        { Ice: 0.12, Ground: 0.08 }
-    ),
-
-    q(
-        "Rock",
-        "Once I decide that something matters, I can endure a great deal without giving up.",
-        { Steel: 0.15, Fighting: 0.10 }
-    ),
-
-    q(
-        "Rock",
-        "I trust evidence and concrete reality more than wishful thinking.",
-        { Ground: 0.12, Ice: 0.10 }
-    ),
-
-    q(
-        "Rock",
-        "I tend to meet problems head-on with persistence and straightforwardness.",
-        { Fighting: 0.15, Dragon: 0.06 }
-    ),
-
-
-    // ---------------- GHOST ----------------
-
-    q(
-        "Ghost",
-        "Nostalgia and memories have a powerful effect on my inner world.",
-        { Psychic: 0.10, Fairy: 0.06 }
-    ),
-
-    q(
-        "Ghost",
-        "I enjoy humor that is strange, clever, eerie, or a little unsettling.",
-        { Dark: 0.10, Bug: 0.10 }
-    ),
-
-    q(
-        "Ghost",
-        "People may find me playful one moment and difficult to read the next.",
-        { Fairy: 0.12, Bug: 0.08 }
-    ),
-
-    q(
-        "Ghost",
-        "When someone hurts me deeply, I can hold onto the memory for a very long time.",
-        { Poison: 0.10, Dark: 0.08 }
-    ),
-
-
-    // ---------------- POISON ----------------
-
-    q(
-        "Poison",
-        "I pay close attention to people's motives because knowing them helps me protect myself.",
-        { Psychic: 0.12, Dark: 0.08 }
-    ),
-
-    q(
-        "Poison",
-        "I am willing to use social leverage strategically when my security is at stake.",
-        { Dark: 0.15, Psychic: 0.08 }
-    ),
-
-    q(
-        "Poison",
-        "Self-reliance matters to me because depending too much on others can feel risky.",
-        { Ground: 0.08, Rock: 0.06 }
-    ),
-
-    q(
-        "Poison",
-        "I usually notice power dynamics and unspoken agendas in a group.",
-        { Psychic: 0.12, Dark: 0.10 }
-    ),
-
-
-    // ---------------- STEEL ----------------
-
-    q(
-        "Steel",
-        "I keep refining my work until small imperfections are corrected.",
-        { Ice: 0.12, Grass: 0.08 }
-    ),
-
-    q(
-        "Steel",
-        "I can work for a long time on one skill because mastery matters more than quick praise.",
-        { Rock: 0.12, Grass: 0.08 }
-    ),
-
-    q(
-        "Steel",
-        "Competition often motivates me to raise my standards even higher.",
-        { Dragon: 0.12, Fighting: 0.08 }
-    ),
-
-    q(
-        "Steel",
-        "I feel more comfortable when details are controlled rather than left to chance.",
-        { Ground: 0.15, Ice: 0.10 }
-    ),
-
-
-    // ---------------- DARK ----------------
-
-    q(
-        "Dark",
-        "I am willing to challenge rules simply because I believe those rules deserve to be tested.",
-        { Flying: 0.08, Fire: 0.08 }
-    ),
-
-    q(
-        "Dark",
-        "Being seen as intimidating does not bother me if it keeps others from pushing me around.",
-        { Dragon: 0.15, Poison: 0.10 }
-    ),
-
-    q(
-        "Dark",
-        "I sometimes prefer provocative or unconventional tactics over playing by expectations.",
-        { Poison: 0.12, Ghost: 0.08 }
-    ),
-
-    q(
-        "Dark",
-        "When someone tries to control me, my instinct is to push back hard.",
-        { Fire: 0.12, Dragon: 0.10 }
-    ),
-
-
-    // ---------------- DRAGON ----------------
-
-    q(
-        "Dragon",
-        "I naturally want to take command when I believe I can lead a situation better.",
-        { Ground: 0.10, Steel: 0.08 }
-    ),
-
-    q(
-        "Dragon",
-        "I hold myself and other people to unusually high standards.",
-        { Steel: 0.15, Rock: 0.08 }
-    ),
-
-    q(
-        "Dragon",
-        "I am strongly motivated by the idea of becoming exceptional rather than merely adequate.",
-        { Steel: 0.12, Flying: 0.08 }
-    ),
-
-    q(
-        "Dragon",
-        "I can become forceful when something stands between me and an important ambition.",
-        { Fire: 0.12, Dark: 0.10 }
-    ),
-
-
-    // ---------------- FAIRY ----------------
-
-    q(
-        "Fairy",
-        "I enjoy creating a warm, playful atmosphere that draws people toward me.",
-        { Electric: 0.12, Water: 0.08 }
-    ),
-
-    q(
-        "Fairy",
-        "Charm and emotional awareness are tools I naturally use in social situations.",
-        { Psychic: 0.10, Water: 0.10 }
-    ),
-
-    q(
-        "Fairy",
-        "I like combining sweetness or beauty with a clever, unexpected edge.",
-        { Ghost: 0.12, Poison: 0.06 }
-    ),
-
-    q(
-        "Fairy",
-        "Fun, wonder, and amusement are important parts of how I connect with life.",
-        { Flying: 0.12, Electric: 0.10 }
-    )
+  // =========================
+  // NORMAL
+  // =========================
+
+  {
+    text: "I am happiest when life is simple, familiar, and reasonably predictable.",
+    weights: {
+      Normal: 1,
+      Ground: 0.20,
+      Rock: 0.15
+    }
+  },
+
+  {
+    text: "I usually choose the sensible option over the flashy or dramatic one.",
+    weights: {
+      Normal: 1,
+      Ground: 0.25,
+      Rock: 0.15,
+      Steel: 0.10
+    }
+  },
+
+  {
+    text: "I tend to keep the peace and cooperate rather than make everything into a confrontation.",
+    weights: {
+      Normal: 1,
+      Water: 0.25,
+      Fairy: 0.10
+    }
+  },
+
+  {
+    text: "A steady routine feels more satisfying to me than constantly chasing novelty.",
+    weights: {
+      Normal: 1,
+      Grass: 0.20,
+      Ground: 0.15
+    }
+  },
+
+  {
+    text: "I rarely feel a need to stand out; being ordinary, capable, and comfortable is enough for me.",
+    weights: {
+      Normal: 1,
+      Water: 0.10,
+      Grass: 0.15
+    }
+  },
+
+
+  // =========================
+  // WATER
+  // =========================
+
+  {
+    text: "I can blend into very different groups without feeling like I need to control the atmosphere.",
+    weights: {
+      Water: 1,
+      Fairy: 0.15,
+      Normal: 0.15
+    }
+  },
+
+  {
+    text: "When plans change suddenly, I would rather adapt than force things back to the original plan.",
+    weights: {
+      Water: 1,
+      Flying: 0.20,
+      Electric: 0.10
+    }
+  },
+
+  {
+    text: "I often bend my approach to fit the people and situation around me.",
+    weights: {
+      Water: 1,
+      Psychic: 0.15,
+      Poison: 0.10
+    }
+  },
+
+  {
+    text: "I dislike feeling boxed in by rigid expectations and prefer room to move with circumstances.",
+    weights: {
+      Water: 1,
+      Flying: 0.25,
+      Dark: 0.10
+    }
+  },
+
+
+  // =========================
+  // FIRE
+  // =========================
+
+  {
+    text: "When I care about something, my feelings are obvious and intense.",
+    weights: {
+      Fire: 1,
+      Dragon: 0.25,
+      Fairy: 0.10
+    }
+  },
+
+  {
+    text: "I speak my mind quickly when something gets under my skin.",
+    weights: {
+      Fire: 1,
+      Dark: 0.20,
+      Fighting: 0.15
+    }
+  },
+
+  {
+    text: "I would rather act with passion and risk overdoing it than stay emotionally restrained.",
+    weights: {
+      Fire: 1,
+      Dragon: 0.20,
+      Electric: 0.15
+    }
+  },
+
+  {
+    text: "In an argument, I can become heated fast if I feel strongly about the issue.",
+    weights: {
+      Fire: 1,
+      Fighting: 0.20,
+      Dark: 0.10
+    }
+  },
+
+
+  // =========================
+  // GRASS
+  // =========================
+
+  {
+    text: "I like to move carefully, giving people and projects time to grow properly.",
+    weights: {
+      Grass: 1,
+      Normal: 0.15,
+      Ground: 0.15
+    }
+  },
+
+  {
+    text: "I feel best when my life has calm structure, healthy habits, and room to breathe.",
+    weights: {
+      Grass: 1,
+      Normal: 0.20,
+      Ground: 0.10
+    }
+  },
+
+  {
+    text: "I naturally notice what needs tending, improving, or nurturing over time.",
+    weights: {
+      Grass: 1,
+      Fairy: 0.15,
+      Steel: 0.10
+    }
+  },
+
+  {
+    text: "I would rather make slow, deliberate progress than rush toward an exciting result.",
+    weights: {
+      Grass: 1,
+      Ground: 0.20,
+      Rock: 0.10
+    }
+  },
+
+
+  // =========================
+  // ELECTRIC
+  // =========================
+
+  {
+    text: "I get restless when nothing new, exciting, or stimulating is happening.",
+    weights: {
+      Electric: 1,
+      Flying: 0.20,
+      Fire: 0.10
+    }
+  },
+
+  {
+    text: "I often do things on impulse simply because they sound fun in the moment.",
+    weights: {
+      Electric: 1,
+      Fairy: 0.20,
+      Flying: 0.15
+    }
+  },
+
+  {
+    text: "People tend to experience me as lively, animated, or full of restless energy.",
+    weights: {
+      Electric: 1,
+      Fire: 0.15,
+      Fairy: 0.15
+    }
+  },
+
+  {
+    text: "I would rather have an unpredictable adventure than a perfectly organized day.",
+    weights: {
+      Electric: 1,
+      Flying: 0.25,
+      Dark: 0.10
+    }
+  },
+
+
+  // =========================
+  // ICE
+  // =========================
+
+  {
+    text: "When emotions run high, I instinctively step back and analyze what is actually happening.",
+    weights: {
+      Ice: 1,
+      Psychic: 0.20,
+      Steel: 0.10
+    }
+  },
+
+  {
+    text: "I value clear reasoning more than cushioning the truth to make it easier to hear.",
+    weights: {
+      Ice: 1,
+      Rock: 0.20,
+      Steel: 0.15
+    }
+  },
+
+  {
+    text: "I am comfortable appearing detached if it helps me stay objective.",
+    weights: {
+      Ice: 1,
+      Psychic: 0.20,
+      Poison: 0.10
+    }
+  },
+
+  {
+    text: "I prefer precise, efficient explanations over emotional or overly personal ones.",
+    weights: {
+      Ice: 1,
+      Steel: 0.20,
+      Rock: 0.10
+    }
+  },
+
+
+  // =========================
+  // BUG
+  // =========================
+
+  {
+    text: "I can become intensely knowledgeable about interests that other people barely notice.",
+    weights: {
+      Bug: 1,
+      Psychic: 0.15,
+      Steel: 0.10
+    }
+  },
+
+  {
+    text: "I often keep a low profile while quietly observing details around me.",
+    weights: {
+      Bug: 1,
+      Ghost: 0.15,
+      Poison: 0.10
+    }
+  },
+
+  {
+    text: "My interests or thought patterns can be unusual enough that people do not always know what to expect from me.",
+    weights: {
+      Bug: 1,
+      Ghost: 0.20,
+      Flying: 0.10
+    }
+  },
+
+  {
+    text: "I would rather be quietly fascinating than obviously impressive.",
+    weights: {
+      Bug: 1,
+      Ghost: 0.15,
+      Psychic: 0.10
+    }
+  },
+
+
+  // =========================
+  // FLYING
+  // =========================
+
+  {
+    text: "My mind naturally drifts toward possibilities, adventures, and what could exist beyond the obvious.",
+    weights: {
+      Flying: 1,
+      Fairy: 0.15,
+      Psychic: 0.10
+    }
+  },
+
+  {
+    text: "I hate feeling trapped by routines, rules, or expectations that limit my freedom.",
+    weights: {
+      Flying: 1,
+      Dark: 0.20,
+      Water: 0.15
+    }
+  },
+
+  {
+    text: "I am willing to leap into unfamiliar experiences because the possibility excites me.",
+    weights: {
+      Flying: 1,
+      Electric: 0.20,
+      Fire: 0.10
+    }
+  },
+
+  {
+    text: "I tend to follow big ideas and ideals even when they are not the most practical option.",
+    weights: {
+      Flying: 1,
+      Psychic: 0.15,
+      Dragon: 0.10
+    }
+  },
+
+
+  // =========================
+  // FIGHTING
+  // =========================
+
+  {
+    text: "When someone I care about is threatened, my first instinct is to step in and defend them.",
+    weights: {
+      Fighting: 1,
+      Rock: 0.15,
+      Fire: 0.15
+    }
+  },
+
+  {
+    text: "I respect discipline, courage, and facing difficult things directly.",
+    weights: {
+      Fighting: 1,
+      Rock: 0.20,
+      Steel: 0.15
+    }
+  },
+
+  {
+    text: "Even under pressure, I try to act according to a personal code of fairness or honor.",
+    weights: {
+      Fighting: 1,
+      Ground: 0.15,
+      Rock: 0.15
+    }
+  },
+
+  {
+    text: "I would rather confront a problem openly than avoid it because it might be difficult.",
+    weights: {
+      Fighting: 1,
+      Fire: 0.15,
+      Rock: 0.20
+    }
+  },
+
+
+  // =========================
+  // PSYCHIC
+  // =========================
+
+  {
+    text: "I am drawn to hidden meanings, abstract ideas, symbolism, or things that are difficult to explain.",
+    weights: {
+      Psychic: 1,
+      Ghost: 0.20,
+      Bug: 0.10
+    }
+  },
+
+  {
+    text: "I often understand the mood or direction of a situation before anyone says it directly.",
+    weights: {
+      Psychic: 1,
+      Poison: 0.15,
+      Fairy: 0.10
+    }
+  },
+
+  {
+    text: "I prefer influencing a situation subtly rather than overpowering it.",
+    weights: {
+      Psychic: 1,
+      Poison: 0.15,
+      Fairy: 0.10
+    }
+  },
+
+  {
+    text: "I spend a lot of time thinking beneath the surface of things.",
+    weights: {
+      Psychic: 1,
+      Ice: 0.15,
+      Ghost: 0.15
+    }
+  },
+
+  {
+    text: "People sometimes come to me because I can see patterns or implications they have not noticed yet.",
+    weights: {
+      Psychic: 1,
+      Ice: 0.15,
+      Bug: 0.10
+    }
+  },
+
+
+  // =========================
+  // GROUND
+  // =========================
+
+  {
+    text: "I believe rules and structure usually exist for a reason and should not be discarded casually.",
+    weights: {
+      Ground: 1,
+      Normal: 0.15,
+      Steel: 0.15
+    }
+  },
+
+  {
+    text: "I trust proven experience more than exciting theories with no practical track record.",
+    weights: {
+      Ground: 1,
+      Rock: 0.20,
+      Normal: 0.15
+    }
+  },
+
+  {
+    text: "When a group lacks direction, I am comfortable setting expectations and taking charge.",
+    weights: {
+      Ground: 1,
+      Dragon: 0.15,
+      Steel: 0.10
+    }
+  },
+
+  {
+    text: "I prefer dependable systems, clear responsibilities, and realistic plans.",
+    weights: {
+      Ground: 1,
+      Steel: 0.20,
+      Normal: 0.15
+    }
+  },
+
+
+  // =========================
+  // ROCK
+  // =========================
+
+  {
+    text: "I would rather hear a blunt truth than a comforting half-truth.",
+    weights: {
+      Rock: 1,
+      Ice: 0.20,
+      Fighting: 0.10
+    }
+  },
+
+  {
+    text: "Once I decide that something matters, I can endure a great deal without giving up.",
+    weights: {
+      Rock: 1,
+      Steel: 0.20,
+      Fighting: 0.15
+    }
+  },
+
+  {
+    text: "I respect people who are straightforward, tough, and dependable.",
+    weights: {
+      Rock: 1,
+      Ground: 0.15,
+      Fighting: 0.10
+    }
+  },
+
+  {
+    text: "I tend to meet hardship with stubborn determination rather than changing course quickly.",
+    weights: {
+      Rock: 1,
+      Steel: 0.15,
+      Dragon: 0.10
+    }
+  },
+
+
+  // =========================
+  // GHOST
+  // =========================
+
+  {
+    text: "I have a strong attachment to memories, old places, old stories, or the emotional atmosphere of the past.",
+    weights: {
+      Ghost: 1,
+      Psychic: 0.10,
+      Fairy: 0.10
+    }
+  },
+
+  {
+    text: "My humor can be strange, dark, teasing, or difficult for people to predict.",
+    weights: {
+      Ghost: 1,
+      Dark: 0.15,
+      Bug: 0.15
+    }
+  },
+
+  {
+    text: "I enjoy keeping parts of myself mysterious rather than making everything about me easy to read.",
+    weights: {
+      Ghost: 1,
+      Psychic: 0.15,
+      Poison: 0.15
+    }
+  },
+
+  {
+    text: "When someone hurts me deeply, I can hold onto the memory for a very long time.",
+    weights: {
+      Ghost: 1,
+      Poison: 0.15,
+      Dark: 0.10
+    }
+  },
+
+
+  // =========================
+  // POISON
+  // =========================
+
+  {
+    text: "I notice social weak points, hidden motives, and shifts in power very quickly.",
+    weights: {
+      Poison: 1,
+      Psychic: 0.20,
+      Dark: 0.10
+    }
+  },
+
+  {
+    text: "I am willing to be strategic with people if that is what it takes to protect my interests.",
+    weights: {
+      Poison: 1,
+      Dark: 0.15,
+      Psychic: 0.10
+    }
+  },
+
+  {
+    text: "I keep my guard up until I am sure another person is safe to trust.",
+    weights: {
+      Poison: 1,
+      Ghost: 0.15,
+      Ice: 0.10
+    }
+  },
+
+  {
+    text: "Security matters enough to me that I sometimes calculate several moves ahead.",
+    weights: {
+      Poison: 1,
+      Ground: 0.10,
+      Steel: 0.15
+    }
+  },
+
+
+  // =========================
+  // STEEL
+  // =========================
+
+  {
+    text: "I can obsess over small flaws because I want the final result to be as close to perfect as possible.",
+    weights: {
+      Steel: 1,
+      Ice: 0.15,
+      Dragon: 0.10
+    }
+  },
+
+  {
+    text: "I am willing to work far longer than most people if that is what mastery requires.",
+    weights: {
+      Steel: 1,
+      Rock: 0.20,
+      Dragon: 0.15
+    }
+  },
+
+  {
+    text: "I dislike leaving important outcomes to chance when careful preparation can control them.",
+    weights: {
+      Steel: 1,
+      Ground: 0.20,
+      Ice: 0.10
+    }
+  },
+
+  {
+    text: "Competition motivates me to sharpen my skills and outperform my previous best.",
+    weights: {
+      Steel: 1,
+      Dragon: 0.20,
+      Fighting: 0.10
+    }
+  },
+
+
+  // =========================
+  // DARK
+  // =========================
+
+  {
+    text: "I am willing to break social rules when I think those rules deserve to be challenged.",
+    weights: {
+      Dark: 1,
+      Flying: 0.15,
+      Fire: 0.10
+    }
+  },
+
+  {
+    text: "Being seen as intimidating does not bother me if it stops people from pushing me around.",
+    weights: {
+      Dark: 1,
+      Dragon: 0.20,
+      Poison: 0.10
+    }
+  },
+
+  {
+    text: "I sometimes test boundaries just to see who or what will actually stop me.",
+    weights: {
+      Dark: 1,
+      Electric: 0.15,
+      Fire: 0.10
+    }
+  },
+
+  {
+    text: "In a serious conflict, I care more about winning than appearing polite or respectable.",
+    weights: {
+      Dark: 1,
+      Dragon: 0.15,
+      Poison: 0.15
+    }
+  },
+
+
+  // =========================
+  // DRAGON
+  // =========================
+
+  {
+    text: "I want to be exceptional, not merely competent.",
+    weights: {
+      Dragon: 1,
+      Steel: 0.20,
+      Fire: 0.10
+    }
+  },
+
+  {
+    text: "I naturally project confidence and expect to be taken seriously.",
+    weights: {
+      Dragon: 1,
+      Ground: 0.15,
+      Dark: 0.10
+    }
+  },
+
+  {
+    text: "I set demanding standards for myself and can become impatient with mediocrity.",
+    weights: {
+      Dragon: 1,
+      Steel: 0.20,
+      Rock: 0.10
+    }
+  },
+
+  {
+    text: "When I pursue an important goal, I want to dominate the challenge rather than simply survive it.",
+    weights: {
+      Dragon: 1,
+      Dark: 0.15,
+      Fighting: 0.10
+    }
+  },
+
+
+  // =========================
+  // FAIRY
+  // =========================
+
+  {
+    text: "I like creating a bright, charming atmosphere that makes people feel drawn in.",
+    weights: {
+      Fairy: 1,
+      Electric: 0.15,
+      Water: 0.10
+    }
+  },
+
+  {
+    text: "I often use humor, warmth, or charm to steer a situation without making the influence obvious.",
+    weights: {
+      Fairy: 1,
+      Psychic: 0.15,
+      Poison: 0.10
+    }
+  },
+
+  {
+    text: "I enjoy being playful, whimsical, or theatrically sweet even when I am thinking several steps ahead.",
+    weights: {
+      Fairy: 1,
+      Ghost: 0.15,
+      Poison: 0.10
+    }
+  },
+
+  {
+    text: "I am good at making people feel comfortable while still keeping a clever edge underneath.",
+    weights: {
+      Fairy: 1,
+      Water: 0.15,
+      Psychic: 0.10
+    }
+  },
+
+  {
+    text: "I can be genuinely caring and sweet while also enjoying the power that charm gives me.",
+    weights: {
+      Fairy: 1,
+      Poison: 0.15,
+      Psychic: 0.10
+    }
+  }
+
 ];
 
 
